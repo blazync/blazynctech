@@ -1,0 +1,3 @@
+# Blazync Technologies
+# blazynctech
+# blazynctech
