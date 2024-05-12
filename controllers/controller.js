@@ -1,0 +1,72 @@
+const Enquiry = require('../models/enquiry');
+const Gallery = require('../models/portfolio');
+const Blog = require('../models/blog');
+const mailer = require('../controllers/mailcontroller');
+
+exports.index = async (req, res) => {
+    res.render('index');
+}
+exports.aboutus = async (req, res) => {
+    res.render('about');
+}
+exports.gallery = async (req, res) => {
+    const type = req.query.type?req.query.type:null;
+    const gallery = await Gallery.find();
+    res.render('gallery',{ gallery,type });
+}
+
+exports.contact = async (req, res) => {
+    res.render('contact');
+}
+exports.contactform = async (req, res) => {
+    const data = req.body;
+    console.log(data);
+    try {
+      const enquiry = new Enquiry(data); 
+      await enquiry.save();
+      console.log(enquiry);
+      mailer.sendEmail(enquiry.email?enquiry.email:'', 'Thanks for showing intrest', `
+      <p>Hello  ${enquiry.name},</p>
+                     <p>Thanks for showing intrest. our representative call you back shortly <br> Thanks and Regards <br> Twins Brothers Threapy.</p>
+                     `);
+      res.redirect(req.headers.referer || '/');
+      console.log('Enquiry submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting enquiry:', error);
+      res.status(500).send('An error occurred while processing your enquiry.');
+    }
+  };
+// Controller function
+exports.blog = async (req, res) => {
+
+    const title = req.params.title;
+   if(title){
+    try {
+        
+        const blog = await Blog.findOne({ title: title });
+        if (!blog) {
+            return res.status(404).send('Blog not found');
+        }
+        res.render('blogview', { blog });
+    } catch (error) {
+        console.error('Error fetching blog:', error);
+        res.status(500).send('An error occurred while fetching the blog.');
+    }
+   }else{
+    const blog = await Blog.find();
+        res.render('blog', { blog });
+   }
+};
+
+exports.login = async (req, res) => {
+    if (req.session && req.session.isLoggedIn) {
+        // Session is active, render dashboard
+        res.redirect('dashboard');
+    } else {
+        res.render('login');
+    }
+}
+exports.lostpassword = async (req, res) => {
+    res.render('lost-password');
+}
+module.exports = exports;

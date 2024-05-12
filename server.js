@@ -1,47 +1,36 @@
+const mongoose = require('mongoose');
 const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser')
-const path = require('path')
-const connect = require('./database/connection.js');
-const userRoutes = require('./routes/userRouter.js');
-// const uploadRoutes = require('./routes/uploadRoutes.js');
-const homeRoutes = require('./routes/homeRoutes');
+const bodyParser = require('body-parser');
+const connectDB = require('./config/config.js');
+const route = require('./routes/route');
+const session = require('express-session');
+const crypto = require('crypto');
+const env = require('dotenv');
+const app =  express();
 
+// session
+app.use(session({
+    secret: crypto.randomBytes(32).toString('hex'),
+    resave: false,
+    saveUninitialized: true
+  }));
 
-const app = express();
-
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views')); 
-
-/** Middlewares */
+// Parse URL-encoded bodies (as sent by HTML forms)
 app.use(bodyParser.urlencoded({ extended: false }));
+// Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
+// Set view engine
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
 
-// Static Middleware
-app.use(express.static(path.join(__dirname, 'public')))
+// Connect to MongoDB
+connectDB();
+const PORT =  process.env.PORT;
 
 
-app.use(express.json());
-app.use(cors());
-app.disable('x-powered-by'); // Correct typo in 'x-powered-by'
+app.use('/', route);
+app.use('/api', route);
 
-const port = 4000;
-
-/** HTTP Requests */
-app.use(homeRoutes)
-app.use(userRoutes);
-// app.use(uploadRoutes);
-
-/** Connect to MongoDB */
-const startServer = async () => {
-    try {
-        // await connect();
-        app.listen(port);
-        console.log(`Server connected to http://localhost:${port}`);
-    } catch (error) {
-        console.log("An error occurred during starting of server", error);
-    }
-};
-
-startServer();
+app.listen(PORT,()=>{
+    console.log("Blazync started at port "+ PORT);
+});
