@@ -61,4 +61,11 @@ router.get('/dashboard/servicesenquiry', isAuthenticated,dashcontroller.services
 router.get('/dashboard/contact', isAuthenticated,dashcontroller.contact);
 
 
+
+router.get('/dashboard/company',isAuthenticated, dashcontroller.company);
+router.get('/dashboard/project',isAuthenticated, dashcontroller.project);
+router.get('/dashboard/invoice',isAuthenticated, dashcontroller.invoice);
+router.get('/dashboard/payment',isAuthenticated, dashcontroller.payment);
+router.get('/dashboard/credentials',isAuthenticated, dashcontroller.credentials);
+
 module.exports = router;

@@ -9,6 +9,11 @@ const mailer = require('../controllers/mailcontroller');
 const generatePassword = require('generate-password');
 const { uploadImage } = require('./uploadImage');
 const path = require('path');
+const Company = require('../models/company');
+const Invoice = require('../models/invoice');
+const Payment = require('../models/payment');
+const Credential = require('../models/credential');
+const Project = require('../models/project');
 
 
 
@@ -22,6 +27,7 @@ exports.dashboard = async (req, res) => {
       res.redirect('/account');
   }
 }
+
 
 
 exports.users = async (req, res) => {
@@ -103,6 +109,30 @@ exports.embedUser = async (req, res) => {
     res.status(500).send('An error occurred while fetching service.');
   }
 };
+
+
+
+
+exports.company = async (req, res) => {
+  const company = await Company.find();
+  res.render('dashboard/company',{company});
+}
+exports.invoice = async (req, res) => {
+  const invoice = await Invoice.find();
+  res.render('dashboard/invoice',{invoice});
+}
+exports.payment = async (req, res) => {
+  const payment = await Payment.find();
+  res.render('dashboard/payment',{payment});
+}
+exports.project = async (req, res) => {
+  const project = await Porject.find();
+  res.render('dashboard/project',{});
+}
+exports.credentials = async (req, res) => {
+  const credentials = await Credential.find();
+  res.render('dashboard/credentials',{credentials});
+}
 
 
 
