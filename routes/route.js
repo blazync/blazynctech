@@ -19,15 +19,24 @@ router.post('/dashboard/embedgallery', isAuthenticated, upload.single('image'), 
 
 
 router.get('/', controller.index);
-router.get('/aboutus', controller.aboutus);
+router.get('/about', controller.about);
 router.get('/contact', controller.contact);
+router.get('/portfolio', controller.portfolio);
+router.get('/careers', controller.careers);
 router.post('/contact', controller.contactform);
 router.get('/blog/', controller.blog);
-router.get('/blog/:title', controller.blog);
+router.get('/blog/:slug', controller.blog);
+// router.get('/services/:slug', controller.embedservice);
+router.get('/services', controller.services);
 router.get('/account', controller.login);
 router.get('/lost-password', controller.lostpassword);
 router.post('/login', dashcontroller.loginform);
-router.get('/gallery',controller.gallery);
+router.get('/gallary',controller.gallery);
+router.get('/blazwhats',controller.blazwhats);
+router.get('/blazschool',controller.blazschool);
+router.get('/privacy-policy',controller.privacyPolicy);
+router.get('/refund-policy',controller.refundPolicy);
+router.get('/terms-and-conditions',controller.termsAndConditions);
 
 //dashboard
 router.get('/dashboard', isAuthenticated, dashcontroller.dashboard);

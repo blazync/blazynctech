@@ -6,8 +6,27 @@ const mailer = require('../controllers/mailcontroller');
 exports.index = async (req, res) => {
     res.render('index');
 }
-exports.aboutus = async (req, res) => {
+exports.about = async (req, res) => {
     res.render('about');
+}
+exports.services = async (req, res) => {
+    res.render('services');
+}
+exports.privacyPolicy = async (req, res) => {
+    res.render('privacy-policy');
+}
+
+exports.blazwhats = async (req, res) => {
+    res.render('blazwhats');
+}
+exports.blazschool = async (req, res) => {
+    res.render('blazschool');
+}
+exports.termsAndConditions = async (req, res) => {
+    res.render('terms-and-conditions');
+}
+exports.refundPolicy = async (req, res) => {
+    res.render('refund-policy');
 }
 exports.gallery = async (req, res) => {
     const type = req.query.type?req.query.type:null;
@@ -15,6 +34,13 @@ exports.gallery = async (req, res) => {
     res.render('gallery',{ gallery,type });
 }
 
+exports.portfolio = async (req, res) => {
+    res.render('portfolio');
+}
+
+exports.careers = async (req, res) => {
+    res.render('careers');
+}
 exports.contact = async (req, res) => {
     res.render('contact');
 }
@@ -36,14 +62,19 @@ exports.contactform = async (req, res) => {
       res.status(500).send('An error occurred while processing your enquiry.');
     }
   };
+
+
+
 // Controller function
+
+
 exports.blog = async (req, res) => {
 
-    const title = req.params.title;
-   if(title){
+    const slug = req.params.slug;
+   if(slug){
     try {
         
-        const blog = await Blog.findOne({ title: title });
+        const blog = await Blog.findOne({ slug: slug });
         if (!blog) {
             return res.status(404).send('Blog not found');
         }

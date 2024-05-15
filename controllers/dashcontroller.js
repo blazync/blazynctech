@@ -416,6 +416,7 @@ exports.embedblog = async (req, res) => {
                   title: req.body.title,
                   content: req.body.content,
                   author: req.body.author,
+                  slug:req.body.slug,
                   imageUrl: req.file ? path.basename(req.file.path) : null,
                   tags: req.body.tags.split(',').map(tag => tag.trim()), // Convert comma-separated tags to an array
                   uploadedBy: req.session.name,
