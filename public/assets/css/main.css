@@ -6,8 +6,15 @@
 /*font*/
 body {
   font-family: "Poppins", sans-serif;
+  overflow-x: hidden !important;
+  /* Prevent horizontal scrolling on the entire page */
 }
-
+@media (max-width: 768px) {
+  /* Adjust the max-width as needed */
+  body {
+    overflow-x: hidden !important;
+  }
+}
 .bg-yellow-500 {
   background-color: #f48c06;
 }

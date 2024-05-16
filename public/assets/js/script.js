@@ -1,4 +1,6 @@
-const swiper = new Swiper('.clientSwiper', {
+
+
+const clientSwiper = new Swiper('.clientSwiper', {
   // Optional parameters
   direction: 'horizontal',
   slidesPerView: 6,
@@ -19,7 +21,7 @@ const swiper = new Swiper('.clientSwiper', {
   loop: true,
     autoplay: {
         delay: 3000, // Autoplay interval
-        disableOnInteraction: false, // Autoplay continues after user interaction
+     
     },
   // If we need pagination
   pagination: {
@@ -30,12 +32,29 @@ const swiper = new Swiper('.clientSwiper', {
   // Navigation arrows
 });
 
-// Pause autoplay on mouse enter
-$(".swiper-container").mouseenter(function(){
-    clientSwiper.autoplay.stop();
+
+
+
+const testimonialSwiper = new Swiper('.testimonialSwiper', {
+  // Optional parameters
+  direction: 'horizontal',
+  slidesPerView: 1,
+  pagination: {
+    el: '.testimonial-pagination',
+  },
+   paginationClickable: true,
+    navigation: {
+    nextEl: '.testimonial-swiper-prev',
+    prevEl: '.testimonial-swiper-next',
+  },
+
+  // Navigation arrows
 });
 
-// Resume autoplay on mouse leave
-$(".swiper-container").mouseleave(function(){
-    clientSwiper.autoplay.start();
-});
+
+
+
+
+
+
+
