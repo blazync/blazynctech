@@ -2,6 +2,26 @@
 <!-- <script src="https://flowbite.com/application-ui/demo/app.bundle.js"></script> -->
 <script src="../../assets/js/app.bundle.js"></script>
 
+<!-- Place the first <script> tag in your HTML's <head> -->
+    <script src="https://cdn.tiny.cloud/1/qmda7zf3uq0kv9m4co1cuoc3g285ykewit1x60se98b9pugm/tinymce/7/tinymce.min.js"
+        referrerpolicy="origin"></script>
+
+    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+        });
+    </script>
+
 <footer class="_wYiJGbRZyFZeCc8y7Sf dPKKN86A3v0FrOZGwMAI _Zt0QWNoskeJIuWJ94UW _Ybd3WwuTVljUT4vEaM3 mveJTCIb2WII7J4sY22F mngKhi_Rv06PF57lblDI _TsbEtxNT5XPbTk6VlSv hhVyfLYO5HBNKAsXwK1v t5cz8HTvFaREjnieK5hv LSIxp7RSuOKhsg28v_u3 SWDELhWFjL8JxEtm91_o _1jTZ8KXRZul60S6czNi">
   <ul class="YRrCJSr_j5nopfm4duUc hP1M5IgfjJiY8_B1VUN1 Q_jg_EPdNf9eDMn1mLI2 EyjJPKD7jgGRBhaLpRVI wezTbYJgxYJp5ZDqX67N _ZI9D_boHHl7De08RAA7">
       <li><a href="#" class="y7LTF_4HCOoAzmZm_v8k c8dCx6gnV43hTOLV6ks5 _43MO1gcdi2Y0RJW1uHL PeR2JZ9BZHYIH8Ea3F36 oJZU4OQzzfXeLbF7UKZ_ xLxz3T8aF89CfiYPaIX3 XIIs8ZOri3wm8Wnj9N_y">Terms and conditions</a></li>
@@ -39,9 +59,13 @@
   </div>
 </footer>
 <p class="_doGzYmWP2_jIjPyHtlc c8dCx6gnV43hTOLV6ks5 ijrOHNoSVGATsWYKl4Id PeR2JZ9BZHYIH8Ea3F36">
-  © 2019-2022 <a href="" class="oJZU4OQzzfXeLbF7UKZ_" target="_blank">Flowbite.com</a>. All rights reserved.
+  © 2019-2022 <a href="" class="oJZU4OQzzfXeLbF7UKZ_" target="_blank">Blazync.com</a>. All rights reserved.
 </p>
- 
+<script type="text/javascript">
+    $( document ).ready(function() {
+        $('table').datatable({});
+    });
+</script>
 </div>
 
 </div>

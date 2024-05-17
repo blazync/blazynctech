@@ -14,6 +14,7 @@ const Invoice = require('../models/invoice');
 const Payment = require('../models/payment');
 const Credential = require('../models/credential');
 const Project = require('../models/project');
+const Services = require('../models/services');
 
 
 
@@ -28,7 +29,16 @@ exports.dashboard = async (req, res) => {
   }
 }
 
-
+exports.enquiry = async (req, res) => {
+  try {
+    const enquiry = await Enquiry.find();
+    res.render('dashboard/enquiry', { enquiry });
+  } catch (error) {
+    // Handle errors
+    console.error('Error fetching enquiry:', error);
+    res.status(500).send('An error occurred while fetching enquiry.');
+  }
+};
 
 exports.users = async (req, res) => {
   try {
@@ -43,7 +53,7 @@ exports.users = async (req, res) => {
 
 exports.addUser = async (req, res) => {
   const users = await User.find();
-  res.render('dashboard/embedUser', { users,type:'add' });
+  res.render('dashboard/embed/embedUser', { users,type:'add' });
 }
 exports.editUser = async (req, res) => {
   const userId = req.query.id; 
@@ -54,7 +64,7 @@ exports.editUser = async (req, res) => {
       if (!user) {
         return res.status(404).send('User not found');
       }
-      res.render('dashboard/embedUser', { users: user, type:'edit' });
+      res.render('dashboard/embed/embedUser', { users: user, type:'edit' });
 };
 
 exports.embedUser = async (req, res) => {
@@ -62,17 +72,17 @@ exports.embedUser = async (req, res) => {
     const type = req.body.type;
 
     if (type === 'add') {
-      const { name, role, email, Status } = req.body;
+      const { name, role, email, Status , password } = req.body;
   
       try {
           // Generate a random password
-          const password = generatePassword.generate({
-            length: 10, // You can adjust the length as needed
-            numbers: true,
-            symbols: true,
-            uppercase: true,
-            excludeSimilarCharacters: true,
-        });
+        //   const password = generatePassword.generate({
+        //     length: 10, // You can adjust the length as needed
+        //     numbers: true,
+        //     symbols: true,
+        //     uppercase: true,
+        //     excludeSimilarCharacters: true,
+        // });
           console.log(password);
           mailer.sendEmail(email, 'Welcome to our platform!', `
           <p>Hello  ${name},</p>
@@ -110,6 +120,11 @@ exports.embedUser = async (req, res) => {
   }
 };
 
+exports.deleteuser = async (req, res) => {
+  const id = req.query.id;
+  await User.findByIdAndDelete(id);
+  res.redirect('/dashboard/users');
+}
 
 
 
@@ -117,22 +132,158 @@ exports.company = async (req, res) => {
   const company = await Company.find();
   res.render('dashboard/company',{company});
 }
+exports.addCompany = async (req, res) => {
+  res.render('dashboard/embed/embedCompany',{type:'add',company:''});
+}
+exports.editCompany = async (req, res) => {
+    const id = req.query.id;
+    const company = await Company.findById(id);
+    res.render('dashboard/embed/embedCompany', { type: 'edit', company });
+}
+exports.deleteCompany = async (req, res) => {
+  const id = req.query.id;
+  await Company.findByIdAndDelete(id);
+  res.redirect('/dashboard/company');
+}
+exports.embedCompany = async (req, res) => {
+  const type = req.body.type;
+  const companyData = req.body;
+  if(type === "edit"){
+    const companyId = req.query.id;
+    const updatedCompany = await Company.findByIdAndUpdate(companyId, req.body, { new: true });
+    if (!updatedCompany) {
+      return res.status(404).send("Company not found");
+    }
+    res.redirect('/dashboard/company');
+    }else{
+      await Company.create(companyData);
+      res.redirect('/dashboard/company');
+    }
+  }
 exports.invoice = async (req, res) => {
   const invoice = await Invoice.find();
-  res.render('dashboard/invoice',{invoice});
+  const company = await Company.find();
+  res.render('dashboard/invoice',{invoice,company});
 }
+
+exports.addinvoice = async (req, res) => {
+  const users = await User.find();
+  const company = await Company.find();
+  res.render('dashboard/embed/embedInvoice',{type:'add',project:'',company,invoice:''});
+}
+exports.viewinvoice = async (req, res) => {
+  const company = await Company.find();
+    const id = req.query.id;
+    const invoice = await Invoice.findOne({_id:id});
+    res.render('dashboard/invoiceBill', {invoice,company });
+}
+exports.editinvoice = async (req, res) => {
+  const company = await Company.find();
+    const id = req.query.id;
+    const invoice = await Invoice.findOne({_id:id});
+    res.render('dashboard/embed/embedInvoice', { type: 'edit',invoice,company });
+}
+exports.deleteinvoice = async (req, res) => {
+  const id = req.query.id;
+  await Invoice.findByIdAndDelete(id);
+  res.redirect('/dashboard/invoice');
+}
+exports.embedinvoice = async (req, res) => {
+  const type = req.body.type;
+  const Data = req.body;
+  if(type === "edit"){
+    const Id = req.query.id;
+    const updated = await Invoice.findByIdAndUpdate(Id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).send("not found");
+    }
+    res.redirect('/dashboard/invoice');
+    }else{
+      await Invoice.create(Data);
+      res.redirect('/dashboard/invoice');
+    }
+  }
+
+
+
+
 exports.payment = async (req, res) => {
   const payment = await Payment.find();
   res.render('dashboard/payment',{payment});
 }
+
+
 exports.project = async (req, res) => {
-  const project = await Porject.find();
-  res.render('dashboard/project',{});
+  const project = await Project.find();
+  res.render('dashboard/project',{project});
 }
+exports.addproject = async (req, res) => {
+  const users = await User.find();
+  const company = await Company.find();
+  res.render('dashboard/embed/embedProject',{type:'add',project:'',company,users});
+}
+exports.editproject = async (req, res) => {
+  const company = await Company.find();
+  const users = await User.find();
+    const id = req.query.id;
+    const project = await Project.findById(id);
+    res.render('dashboard/embed/embedProject', { type: 'edit', project,company,users });
+}
+exports.deleteproject = async (req, res) => {
+  const id = req.query.id;
+  await Project.findByIdAndDelete(id);
+  res.redirect('/dashboard/project');
+}
+exports.embedproject = async (req, res) => {
+  const type = req.body.type;
+  const Data = req.body;
+  if(type === "edit"){
+    const Id = req.query.id;
+    const updated = await Project.findByIdAndUpdate(Id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).send("not found");
+    }
+    res.redirect('/dashboard/project');
+    }else{
+      await Project.create(Data);
+      res.redirect('/dashboard/project');
+    }
+  }
+
+
+
 exports.credentials = async (req, res) => {
   const credentials = await Credential.find();
   res.render('dashboard/credentials',{credentials});
 }
+exports.addcredentials = async (req, res) => {
+  res.render('dashboard/embed/embedCredentials',{type:'add',credential:''});
+}
+exports.editcredentials = async (req, res) => {
+    const id = req.query.id;
+    const credential = await Credential.findById(id);
+    res.render('dashboard/embed/embedCredentials', { type: 'edit', credential });
+}
+exports.deletecredentials = async (req, res) => {
+  const id = req.query.id;
+  await Credential.findByIdAndDelete(id);
+  res.redirect('/dashboard/credentials');
+}
+exports.embedcredentials = async (req, res) => {
+  const type = req.body.type;
+  const Data = req.body;
+  if(type === "edit"){
+    const Id = req.query.id;
+    const updated = await Credential.findByIdAndUpdate(Id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).send("Company not found");
+    }
+    res.redirect('/dashboard/credentials');
+    }else{
+      await Credential.create(Data);
+      res.redirect('/dashboard/credentials');
+    }
+  }
 
 
 
@@ -143,7 +294,7 @@ exports.services = async (req, res) => {
 }
 exports.addservices = async (req, res) => {
   const enquiries = await Enquiry.find();
-  res.render('dashboard/embedservices',{ enquiries,type:'add',service:'' });
+  res.render('dashboard/embed/embedservices',{ enquiries,type:'add',service:'' });
 }
 exports.deleteservices = async (req, res) => {
   try {
@@ -164,7 +315,7 @@ exports.editservices = async (req, res) => {
     if (!service) {
       return res.status(404).send('Service not found');
     }
-    res.render('dashboard/embedservices', { enquiries, type: 'edit', service });
+    res.render('dashboard/embed/embedservices', { enquiries, type: 'edit', service });
   } catch (error) {
     console.error('Error fetching service:', error);
     res.status(500).send('An error occurred while fetching service.');
@@ -176,8 +327,10 @@ exports.embedservice = async (req, res) => {
     const type = req.body.type;
     if (type === 'add') {
       const type = req.body.type;
-      const { name ,description } = req.body;
-      const newService = new Services({ name,description });
+      const { title,shortdescription,description} = req.body;
+      const slug = req.body.title.replace(/\s+/g, '_').toLowerCase();
+      const imageUrl = req.file ? path.basename(req.file.path) : null;
+      const newService = new Services({ title,shortdescription,slug,description,imageUrl });
       await newService.save();
       res.redirect('/dashboard/services');      
     } else {
@@ -310,75 +463,14 @@ exports.loginform = async (req, res) => {
     });
   };
 
-  exports.gallery = async (req, res) => {
-    const gallery = await Gallery.find();
-    res.render('dashboard/gallery',{ gallery });
-  }
- 
 
-  exports.addgalleryimage = async (req, res) => {
-    const gallery = await Gallery.find();
-    res.render('dashboard/embedgallery', { gallery,type:'add' });
-  }
-
-  exports.deletegalleryimage = async (req, res) => {
-    try {
-      const Id = req.query.id;
-      await Gallery.findByIdAndDelete(Id);
-      res.redirect('/dashboard/gallery');
-    } catch (error) {
-      console.error('Error deleting service:', error);
-      res.status(500).send('An error occurred while deleting the service.');
-    }
-  }
-  exports.embedgallery = async (req, res) => {
-    try {
-        const type = req.body.type;
-        const filetype = req.body.filetype; // Access the selected file type from the dropdown menu
-        let filepath;
-        if (filetype === 'image') {
-            filepath = req.file ? path.basename(req.file.path) : null; // Get the file path from req.file
-        } else {
-            filepath = req.body.video_link;
-        }
-        if (type === 'add') {
-            try {
-                // Save the file path in the database
-                const newimages = new Gallery({
-                    imageUrl: filepath,
-                    filetype:filetype,
-                    uploadedBy: req.session.name,
-                    uploadedByEmail: req.session.email
-                });
-                console.log(newimages);
-                await newimages.save();
-
-                res.redirect('/dashboard/gallery');
-            } catch (error) {
-                console.error('Error saving image:', error);
-                res.status(500).json({ error: 'An error occurred while saving the image' });
-            }
-        } else {
-            const serviceId = req.query.id;
-            const service = await Gallery.findByIdAndUpdate(serviceId, req.body, { new: true });
-            if (!service) {
-                return res.status(404).send('gallery image not found');
-            }
-            res.redirect('/dashboard/gallery');
-        }
-    } catch (error) {
-        // Handle errors
-        console.error('Error fetching service:', error);
-        res.status(500).send('An error occurred while fetching service.');
-    }
-};
 exports.blog = async (req, res) => {
   const blog = await Blog.find();
-  res.render('dashboard/blog',{ blog });
+  res.render('dashboard/blog',{ blog,session:req.session });
 }
 exports.addblog = async (req, res) => {
   const blog = await Blog.find();
-  res.render('dashboard/embedblog',{ blog,type:'add', });
+  res.render('dashboard/embed/embedBlog',{ blog,type:'add',session:req.session.user });
 }
 exports.deleteblog = async (req, res) => {
   try {
@@ -398,7 +490,7 @@ exports.editblog = async (req, res) => {
     if (!blog) {
       return res.status(404).send('blog not found');
     }
-    res.render('dashboard/embedblog', { blog, type: 'edit', });
+    res.render('dashboard/embed/embedBlog', { blog, type: 'edit', });
   } catch (error) {
     console.error('Error fetching service:', error);
     res.status(500).send('An error occurred while fetching service.');
@@ -416,13 +508,16 @@ exports.embedblog = async (req, res) => {
                   title: req.body.title,
                   content: req.body.content,
                   author: req.body.author,
-                  slug:req.body.slug,
+                  slug: req.body.title.replace(/\s+/g, '_').toLowerCase(),
                   imageUrl: req.file ? path.basename(req.file.path) : null,
-                  tags: req.body.tags.split(',').map(tag => tag.trim()), // Convert comma-separated tags to an array
+                  tags: req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [],
+                  createdAt: req.body.createdAt ? new Date(req.body.createdAt) : Date.now(),
+                  updatedAt: req.body.updatedAt ? new Date(req.body.updatedAt) : null,
+                
                   uploadedBy: req.session.name,
                   uploadedByEmail: req.session.email
               });
-              console.log('Blog db content which is saving',newBlog);
+              console.log('Blog db content which is saving', newBlog);
 
               await newBlog.save();
 
@@ -433,13 +528,23 @@ exports.embedblog = async (req, res) => {
           }
       } else {
           const blogId = req.query.id;
-          const updatedBlog = await Blog.findByIdAndUpdate(blogId, req.body, { new: true });
-          
+          const updatedBlog = await Blog.findByIdAndUpdate(blogId, {
+              title: req.body.title,
+              content: req.body.content,
+              author: req.body.author,
+              slug: req.body.title.replace(/\s+/g, '_').toLowerCase(),
+              imageUrl: req.file ? path.basename(req.file.path) : null,
+              tags: req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [],
+              createdAt: req.body.createdAt ? new Date(req.body.createdAt) : Date.now(),
+              updatedAt: req.body.updatedAt ? new Date(req.body.updatedAt) : null,
+              comments: req.body.comments ? req.body.comments.split(',') : [],
+          }, { new: true });
+
           if (!updatedBlog) {
               return res.status(404).send('Blog post not found');
           }
-          
-          res.redirect('/dashboard/gallery');
+
+          res.redirect('/dashboard/blog');
       }
   } catch (error) {
       // Handle errors

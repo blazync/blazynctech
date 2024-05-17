@@ -1,16 +1,24 @@
 const Enquiry = require('../models/enquiry');
 const Gallery = require('../models/portfolio');
+const Company = require('../models/company');
+const Invoice = require('../models/invoice');
+const Payment = require('../models/payment');
+const Credential = require('../models/credential');
+const Project = require('../models/project');
 const Blog = require('../models/blog');
 const mailer = require('../controllers/mailcontroller');
+const Services = require('../models/services');
 
 exports.index = async (req, res) => {
+    
     res.render('index');
 }
 exports.about = async (req, res) => {
     res.render('about');
 }
 exports.services = async (req, res) => {
-    res.render('services');
+    const services = await Services.find();
+    res.render('services',{services});
 }
 exports.privacyPolicy = async (req, res) => {
     res.render('privacy-policy');

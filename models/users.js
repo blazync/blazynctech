@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  role: String,
-  Status: String,
-  password: String,
-  timestamps: { type: Date, default: Date.now }
+    name: String,
+    email: String,
+    role: String,
+    Status: String,
+    password: String,
+    timestamps: { type: Date, default: Date.now }
 });
 
 // Register the model
